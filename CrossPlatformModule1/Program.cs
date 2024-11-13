@@ -11,7 +11,7 @@ namespace CrossPlatformModule1
             try
             {
                 string basePath = FileSearch.FindProjectDirectory(AppContext.BaseDirectory) ??
-                                  throw new Exception("Could not find project directory");
+                                  throw new FileNotFoundException("Could not find project directory");
 
                 string inputFilePath = Path.Combine(basePath, "INPUT.txt");
                 string outputFilePath = Path.Combine(basePath, "OUTPUT.txt");
@@ -30,6 +30,11 @@ namespace CrossPlatformModule1
 
         public static int[] ParseInput(string inputFilePath)
         {
+            if (File.ReadAllLines(inputFilePath).Length == 0)
+            {
+                throw new FileNotFoundException("Could not find input file", inputFilePath);
+            }
+
             string[] numbers = File.ReadAllLines(inputFilePath)[0].Trim().Split(' ');
             if (numbers.Length != 2)
                 throw new Exception($"Invalid number of inputs (2 != {numbers.Length})): {inputFilePath}");
